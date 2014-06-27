@@ -11,26 +11,54 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="mobi.esys.jobshunter.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <permission
+        android:name="mobi.esys.helpmeapp.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
-        <receiver android:name="mobi.esys.recivers.SendServerReciever" >
+        <receiver android:name="mobi.esys.recivers.SendServerReciever" />
+
+        <service android:name="mobi.esys.services.SendDataService" />
+        <service android:name="mobi.esys.services.GcmIntentService" />
+
+        <receiver
+            android:name="mobi.esys.recivers.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+
+                <!-- Receives the actual messages. -->
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="mobi.esys.helpmeapp" />
+            </intent-filter>
         </receiver>
 
-        <service android:name="mobi.esys.services.SendDataService" >
-        </service>
-
-        <activity
-            android:name="MainActivity"
-            android:label="@string/app_name" >
+        <activity android:name="MainActivity" />
+        <activity android:name="LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="NOActivity" />
+        <activity android:name="com.vk.sdk.VKOpenAuthActivity" />
+        <activity android:name="WebLoginActivity" >
+        </activity>
+        <activity android:name="com.facebook.LoginActivity" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/fb_app_id" />
     </application>
 
 </manifest>

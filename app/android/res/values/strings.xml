@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">HelpMeApp</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">I need your help</string>
     <string name="startBtn">Начать отслеживание</string>
     <string name="stopBtn">Остановить отслеживание</string>
     <string name="exit">Выход</string>
+    <string name="regSuccess">Успешная регистрация</string>
+    <string name="regError">Can\'t registrate or update user information</string>
+    <string name="deviceSuccess">Устройство успешно зарегистрировано</string>
+    <string name="deviceRegError">Can\'t registrate device</string>
+    <string name="limitSuccess">Параметры отслеживания успешно установлены</string>
+    <string name="limitsError">Can\'t set monitoring params</string>
+    <string name="regFail">Не удалось зарегистрировать пользователя</string>
+    <string name="deviceFail">Не удалось зарегистрировать устройство</string>
+    <string name="limitsFail">Не удалось установить параметры отслеживания</string>
+    <string name="addRecordError">Can\'t add record</string>
+    <string name="changeConditions">Изменить условия</string>
+    <string name="disableTracking">Отключить слежение</string>
+    <string name="fb_app_id">579394165512081</string>
+
+    <string-array name="menuItems">
+        <item>@string/changeConditions</item>
+        <item>@string/disableTracking</item>
+    </string-array>
+
+    <string name="warning">#IneedYourHelp\nВам нужна помощь?</string>
 
 </resources>

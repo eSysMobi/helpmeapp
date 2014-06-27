@@ -1,5 +1,7 @@
 # cache for current jar dependency. DO NOT EDIT.
 # format is <lastModified> <length> <SHA-1> <path>
 # Encoding is UTF-8
-1402739875761 648327 ded9acc6a9792b8f1afc470f0c9cd36d178914cd G:\androworkspace\HelpMeApp\libs\android-support-v4.jar
+1401879944505 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 G:\androworkspace\library\libs\android-support-v4.jar
+1403856194891 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 G:\facebook-android-sdk-3.15.0\facebook\libs\android-support-v4.jar
+1403090438723 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 G:\androworkspace\HelpMeApp\libs\android-support-v4.jar
 1401877369364 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 G:\androworkspace\google-play-services_lib\libs\android-support-v4.jar

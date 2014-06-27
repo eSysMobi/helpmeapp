@@ -1,6 +1,8 @@
 package mobi.esys.services;
 
-import mobi.esys.tasks.SendDataTask;
+import mobi.esys.constants.HMAConsts;
+import mobi.esys.data_types.TrackingRecordUnit;
+import mobi.esys.tasks.SendRecordToServerTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +16,8 @@ import android.util.Log;
 
 public class SendDataService extends Service {
 	private transient LocationManager locationManager;
-	private transient Bundle datas;
+	private transient TrackingRecordUnit recordUnit;
 	private transient Criteria criteria;
-
-	public SendDataService() {
-		this.datas = new Bundle();
-	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -29,15 +27,15 @@ public class SendDataService extends Service {
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		String provider = locationManager.getBestProvider(criteria, true);
 		Log.d("location provider", provider);
-		locationManager.requestLocationUpdates(provider, 60000, 10, listener);
+		locationManager.requestLocationUpdates(provider, HMAConsts.SEND_DELAY,
+				HMAConsts.REQUEST_LOCATION_DIST, listener);
 		Location loc = locationManager.getLastKnownLocation(provider);
-		datas.putString("lat", String.valueOf(loc.getLatitude()));
-		datas.putString("lon", String.valueOf(loc.getLongitude()));
-		datas.putString("mvelocity", String.valueOf(loc.getSpeed()));
-		Log.d("data", datas.toString());
+		recordUnit = new TrackingRecordUnit(loc);
+		Log.d("data", recordUnit.toString());
 
-		SendDataTask dataTask = new SendDataTask();
-		dataTask.execute(datas);
+		SendRecordToServerTask dataTask = new SendRecordToServerTask(
+				getApplicationContext());
+		dataTask.execute(recordUnit);
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -56,7 +54,8 @@ public class SendDataService extends Service {
 
 		@Override
 		public void onProviderEnabled(String provider) {
-			locationManager.requestLocationUpdates(provider, 60000, 10,
+			locationManager.requestLocationUpdates(provider,
+					HMAConsts.SEND_DELAY, HMAConsts.REQUEST_LOCATION_DIST,
 					listener);
 		}
 
@@ -67,16 +66,13 @@ public class SendDataService extends Service {
 
 		@Override
 		public void onLocationChanged(Location location) {
-			datas.putString("lat", String.valueOf(location.getLatitude()));
-			datas.putString("lon", String.valueOf(location.getLongitude()));
-			datas.putString("mvelocity", String.valueOf(location.getSpeed()));
-			Log.d("data", datas.toString());
+			recordUnit = new TrackingRecordUnit(location);
+			Log.d("data", recordUnit.toString());
 		}
 	};
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

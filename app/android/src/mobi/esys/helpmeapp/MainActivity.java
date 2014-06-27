@@ -1,10 +1,11 @@
 package mobi.esys.helpmeapp;
 
 import mobi.esys.constants.HMAConsts;
-import mobi.esys.recivers.SendServerReciever;
-import mobi.esys.services.SendDataService;
+import mobi.esys.data_types.TrackingLimitsUnit;
+import mobi.esys.tasks.DisableTrackingTask;
+import mobi.esys.tasks.EnableTrackingTask;
+import mobi.esys.tasks.SetLimitsTask;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,19 +27,30 @@ public class MainActivity extends Activity implements OnClickListener {
 	private transient Button setButton;
 	private transient Button stopButton;
 	private transient Button exitButton;
-	private static final int SEND_DELAY = 60000;
-	private static final int NOTIFY_ID = 101;
-	private transient SharedPreferences prefs;
-	private transient AlarmManager alarms;
-	private transient PendingIntent pendingIntent;
+	private transient boolean isStoped = true;
+	private transient SharedPreferences preferences;
+
+	private static final int NOTIFY_ID = HMAConsts.WORKING_NOTIFICATION_ID;
+
+	// private transient SharedPreferences prefs;
+
+	// private transient AlarmManager alarms;
+	// private transient PendingIntent pendingIntent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Resources resources = getResources();
+		Bundle extras;
 
-		prefs = getSharedPreferences(HMAConsts.HMAPref, MODE_PRIVATE);
+		if (getIntent().getExtras() != null) {
+			extras = getIntent().getExtras();
+			if (extras.getBoolean("isFromNOActivity")) {
+				stopSendService();
+			}
+		}
+		preferences = getSharedPreferences(HMAConsts.HMA_PREF, MODE_PRIVATE);
 		int[] velocities = resources.getIntArray(R.array.velocities);
 		int[] reaction_times = resources
 				.getIntArray(R.array.reaction_intervals);
@@ -71,12 +83,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void saveToPref() {
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putInt("vel",
-				Integer.parseInt(velSpinner.getSelectedItem().toString()));
-		editor.putInt("actTime",
-				Integer.parseInt(timeSpinner.getSelectedItem().toString()));
-		editor.commit();
+		TrackingLimitsUnit limitsUnit = new TrackingLimitsUnit(timeSpinner
+				.getSelectedItem().toString(), velSpinner.getSelectedItem()
+				.toString());
+		SetLimitsTask limitsTask = new SetLimitsTask(MainActivity.this);
+		limitsTask.execute(limitsUnit);
 	}
 
 	private Integer[] intToInteger(int[] array) {
@@ -105,21 +116,22 @@ public class MainActivity extends Activity implements OnClickListener {
 			nm.cancel(NOTIFY_ID);
 			finish();
 		} else {
-			stopSendService();
+			if (!isStoped) {
+				stopSendService();
+			}
 		}
 
 	}
 
 	private void startSendService() {
-		alarms = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-		Intent intent = new Intent(MainActivity.this, SendServerReciever.class);
+		isStoped = false;
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean("isStoped", isStoped);
+		editor.commit();
+		EnableTrackingTask enableTrackingTask = new EnableTrackingTask(
+				MainActivity.this);
+		enableTrackingTask.execute();
 
-		pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 1,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		alarms.setRepeating(AlarmManager.RTC, System.currentTimeMillis(),
-				SEND_DELAY, pendingIntent);
-		Log.i("start", "start");
 	}
 
 	void sendNotif() {
@@ -152,13 +164,14 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void stopSendService() {
-		stopService(new Intent(MainActivity.this, SendDataService.class));
-		alarms = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-		Intent intent = new Intent(MainActivity.this, SendServerReciever.class);
+		DisableTrackingTask disableTracking = new DisableTrackingTask(
+				MainActivity.this);
+		disableTracking.execute();
+		isStoped = true;
 
-		pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 1,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		alarms.cancel(pendingIntent);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean("isStoped", isStoped);
+		editor.commit();
 	}
 
 }
