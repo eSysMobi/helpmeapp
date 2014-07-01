@@ -17,11 +17,13 @@
     <string name="addRecordError">Can\'t add record</string>
     <string name="changeConditions">Изменить условия</string>
     <string name="disableTracking">Отключить слежение</string>
+    <string name="changeNetwork">Переключить аккаунт</string>
     <string name="fb_app_id">579394165512081</string>
 
     <string-array name="menuItems">
         <item>@string/changeConditions</item>
         <item>@string/disableTracking</item>
+        <item>@string/changeNetwork</item>
     </string-array>
 
     <string name="warning">#IneedYourHelp\nВам нужна помощь?</string>

@@ -6,22 +6,25 @@ import mobi.esys.tasks.DisableTrackingTask;
 import mobi.esys.tasks.EnableTrackingTask;
 import mobi.esys.tasks.SetLimitsTask;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements
+		android.view.View.OnClickListener {
 	private transient Spinner velSpinner;
 	private transient Spinner timeSpinner;
 	private transient Button setButton;
@@ -31,11 +34,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private transient SharedPreferences preferences;
 
 	private static final int NOTIFY_ID = HMAConsts.WORKING_NOTIFICATION_ID;
-
-	// private transient SharedPreferences prefs;
-
-	// private transient AlarmManager alarms;
-	// private transient PendingIntent pendingIntent;
+	private static AlertDialog dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +42,20 @@ public class MainActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_main);
 		Resources resources = getResources();
 		Bundle extras;
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+		builder.setCancelable(false);
+		builder.setTitle("Ошибка");
+		builder.setMessage("Истекла регистрация войдите еще раз");
+		builder.setPositiveButton("OK", new OnClickListener() {
+			public void onClick(DialogInterface dialog, int arg1) {
+				SharedPreferences.Editor editor = preferences.edit();
+				editor.putString(HMAConsts.HMA_PREF_API_KEY, "");
+				editor.putString(HMAConsts.HMA_PREF_USER_ID, "");
+				editor.commit();
+			}
+		});
+		dialog = builder.create();
 
 		if (getIntent().getExtras() != null) {
 			extras = getIntent().getExtras();
@@ -96,6 +109,14 @@ public class MainActivity extends Activity implements OnClickListener {
 			resultArray[i] = array[i];
 		}
 		return resultArray;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (dialog != null) {
+			dialog.dismiss();
+		}
 	}
 
 	@Override
@@ -172,6 +193,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean("isStoped", isStoped);
 		editor.commit();
+	}
+
+	public static void expireDialog() {
+		if (!dialog.isShowing()) {
+			dialog.show();
+		}
+
 	}
 
 }

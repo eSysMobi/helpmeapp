@@ -1,6 +1,7 @@
 package mobi.esys.helpmeapp;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import mobi.esys.constants.HMAConsts;
 import mobi.esys.data_types.AuthData;
@@ -14,13 +15,14 @@ import org.joda.time.format.DateTimeFormatter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.facebook.Request;
@@ -29,6 +31,7 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.ppierson.t4jtwitterlogin.T4JTwitterLoginActivity;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCaptchaDialog;
 import com.vk.sdk.VKScope;
@@ -37,22 +40,23 @@ import com.vk.sdk.VKSdkListener;
 import com.vk.sdk.VKUIHelper;
 import com.vk.sdk.api.VKError;
 
-public class LoginActivity extends Activity implements OnClickListener {
+public class LoginActivity extends Activity implements
+		android.view.View.OnClickListener {
 	private transient ImageView vkLogBtn;
 	private transient ImageView fbLogBtn;
 	private transient ImageView twLoginBtn;
 	private transient SharedPreferences prefs;
 	private transient Bundle fbPrefs;
 
+	private static final int TWITTER_LOGIN_REQUEST_CODE = 1;
+
 	private static String sTokenKey = "VK_ACCESS_TOKEN";
 	private static String[] sMyScope = new String[] { VKScope.FRIENDS,
 			VKScope.WALL, VKScope.NOHTTPS };
 
-	// vk id 4396881
-	// fb id 579394165512081
-	// fb secret dbafbd72db6923f5a75f3507a0deb06e
-	// tw consumer JT8xafimiH941LM3xC4umLPdu
-	// tw consumer secret 0TKoZNTaV0wnMSoEFGTWf16RpDuwJCOJnWHMlHwDT6MLfTpCmX
+	private transient String provider = "";
+
+	private transient static AlertDialog dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +66,26 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 		fbPrefs = new Bundle();
 
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				LoginActivity.this);
+		builder.setCancelable(false);
+		builder.setTitle("Ошибка");
+		builder.setMessage("Истекла регистрация войдите еще раз");
+		builder.setPositiveButton("OK", new OnClickListener() {
+			public void onClick(DialogInterface dialog, int arg1) {
+				SharedPreferences.Editor editor = prefs.edit();
+				editor.putString(HMAConsts.HMA_PREF_API_KEY, "");
+				editor.putString(HMAConsts.HMA_PREF_USER_ID, "");
+				editor.commit();
+				startActivity(new Intent(LoginActivity.this,
+						LoginActivity.class));
+			}
+		});
+		dialog = builder.create();
+
 		String apiKey = prefs.getString(HMAConsts.HMA_PREF_API_KEY, "");
 		String userID = prefs.getString(HMAConsts.HMA_PREF_USER_ID, "");
-		if (apiKey.equals("") && userID.equals("")) {
+		if (apiKey.equals("") || userID.equals("")) {
 
 			setContentView(R.layout.activity_login);
 			vkLogBtn = (ImageView) findViewById(R.id.vkLoginBtn);
@@ -107,12 +128,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 				AddDeviceTask addDeviceTask = new AddDeviceTask(
 						LoginActivity.this);
 				addDeviceTask.execute(adBundle);
+
 				return null;
 			}
-
-			protected void onPostExecute(Void result) {
-				startActivity(new Intent(LoginActivity.this, MainActivity.class));
-			};
 
 		}.execute(null, null, null);
 
@@ -120,16 +138,15 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		Intent intent = new Intent(LoginActivity.this, WebLoginActivity.class);
 		switch (v.getId()) {
 		case R.id.vkLoginBtn:
+			provider = "vk";
 			VKSdk.initialize(sdkListener, "4396881",
 					VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
 			VKSdk.authorize(sMyScope);
 			break;
 		case R.id.fbLoginBtn:
-			// intent.putExtra("provider", "fb");
-			// startActivity(intent);
+			provider = "fb";
 
 			Session.openActiveSession(this, true, new Session.StatusCallback() {
 
@@ -166,14 +183,30 @@ public class LoginActivity extends Activity implements OnClickListener {
 					}
 				}
 			});
+
 			break;
 		case R.id.twLoginBtn:
-			intent.putExtra("provider", "tw");
-			startActivity(intent);
+			provider = "tw";
+			Intent twitterLoginIntent = new Intent(LoginActivity.this,
+					T4JTwitterLoginActivity.class);
+			twitterLoginIntent.putExtra(
+					T4JTwitterLoginActivity.TWITTER_CONSUMER_KEY,
+					"JT8xafimiH941LM3xC4umLPdu");
+			twitterLoginIntent.putExtra(
+					T4JTwitterLoginActivity.TWITTER_CONSUMER_SECRET,
+					"0TKoZNTaV0wnMSoEFGTWf16RpDuwJCOJnWHMlHwDT6MLfTpCmX");
+			startActivityForResult(twitterLoginIntent,
+					TWITTER_LOGIN_REQUEST_CODE);
 			break;
 
 		default:
 			break;
+		}
+	}
+
+	public static void expireDialog() {
+		if (!dialog.isShowing()) {
+			dialog.show();
 		}
 	}
 
@@ -187,14 +220,44 @@ public class LoginActivity extends Activity implements OnClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		VKUIHelper.onDestroy(this);
+		if (dialog != null) {
+			dialog.dismiss();
+		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		VKUIHelper.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode,
-				resultCode, data);
+		if (provider.equals("vk")) {
+			VKUIHelper.onActivityResult(requestCode, resultCode, data);
+		} else if (provider.equals("fb")) {
+			Session.getActiveSession().onActivityResult(this, requestCode,
+					resultCode, data);
+		} else {
+			if (requestCode == TWITTER_LOGIN_REQUEST_CODE) {
+				Log.d("TAG", "TWITTER LOGIN REQUEST CODE");
+				if (resultCode == T4JTwitterLoginActivity.TWITTER_LOGIN_RESULT_CODE_SUCCESS) {
+					Log.d("TAG", "TWITTER LOGIN SUCCESS");
+
+					AuthData authData = new AuthData(
+							"twitter",
+							T4JTwitterLoginActivity
+									.getTwitterUserID(LoginActivity.this),
+							T4JTwitterLoginActivity
+									.getAccessToken(LoginActivity.this)
+									+ ":"
+									+ T4JTwitterLoginActivity
+											.getAccessTokenSecret(LoginActivity.this));
+
+					RegTask regTask = new RegTask(LoginActivity.this);
+					regTask.execute(authData);
+
+				} else if (resultCode == T4JTwitterLoginActivity.TWITTER_LOGIN_RESULT_CODE_FAILURE) {
+					Log.d("TAG", "TWITTER LOGIN FAIL");
+				} else {
+				}
+			}
+		}
 	}
 
 	private VKSdkListener sdkListener = new VKSdkListener() {
@@ -229,4 +292,5 @@ public class LoginActivity extends Activity implements OnClickListener {
 			regTask.execute(authData);
 		}
 	};
+
 }

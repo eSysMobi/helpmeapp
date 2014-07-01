@@ -6,6 +6,8 @@ import mobi.esys.constants.HMAConsts;
 import mobi.esys.data_types.AuthData;
 import mobi.esys.data_types.TrackingLimitsUnit;
 import mobi.esys.data_types.TrackingRecordUnit;
+import mobi.esys.helpmeapp.LoginActivity;
+import mobi.esys.helpmeapp.MainActivity;
 import mobi.esys.helpmeapp.R;
 import mobi.esys.net.APIRequest;
 import mobi.esys.tasks.AddDeviceTask;
@@ -14,7 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -45,6 +49,7 @@ public class HMAServer {
 				Context.MODE_PRIVATE);
 		this.userID = preferences.getString(HMAConsts.HMA_PREF_USER_ID, "");
 		this.apiKey = preferences.getString(HMAConsts.HMA_PREF_API_KEY, "");
+
 	}
 
 	public void reg(AuthData authData) {
@@ -110,7 +115,8 @@ public class HMAServer {
 
 	}
 
-	public void addDevice(Bundle addDeviceBundle) {
+	public JSONObject addDevice(Bundle addDeviceBundle) {
+		JSONObject addDeviceJSONObject = new JSONObject();
 		try {
 			StringBuilder addDeviceRequestURL = new StringBuilder();
 			addDeviceRequestURL.append(API_DEVICE)
@@ -120,7 +126,7 @@ public class HMAServer {
 					.append(addDeviceBundle.getString("gcmToken"))
 					.append("&type=android");
 
-			JSONObject addDeviceJSONObject = apirequest
+			addDeviceJSONObject = apirequest
 					.doJSONGetRequest(addDeviceRequestURL.toString());
 
 			if (addDeviceJSONObject.getString("status").equals("success")) {
@@ -131,12 +137,27 @@ public class HMAServer {
 					editor.putString("deviceID",
 							addDeviceJSONObject.getString("deviceId"));
 				editor.commit();
+				context.startActivity(new Intent(context, MainActivity.class));
 
-			} else {
+			} else if (addDeviceJSONObject.has("error")
+					&& addDeviceJSONObject.getString("error").equals(
+							"Expired_token")) {
+				if (((Activity) context) instanceof LoginActivity) {
+					((LoginActivity) context).runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							LoginActivity.expireDialog();
+						}
+					});
+
+				}
 			}
 		} catch (JSONException e) {
 			Log.d(JSON_ERROR_TAG, resources.getString(R.string.deviceRegError));
 		}
+
+		return addDeviceJSONObject;
 	}
 
 	public void setLimits(TrackingLimitsUnit limitsUnit) {
@@ -156,11 +177,21 @@ public class HMAServer {
 				// resources.getString(R.string.limitSuccess),
 				// toastDuration).show();
 
-			} else {
-				// Toast.makeText(context,
-				// resources.getString(R.string.limitsFail), toastDuration)
-				// .show();
+			} else if (setLimitsJSONObject.has("error")
+					&& setLimitsJSONObject.getString("error").equals(
+							"Expired_token")) {
+				if (((Activity) context) instanceof MainActivity) {
+					((MainActivity) context).runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							MainActivity.expireDialog();
+						}
+					});
+
+				}
 			}
+
 		} catch (JSONException e) {
 			Log.d(JSON_ERROR_TAG, resources.getString(R.string.limitsError));
 		}
@@ -224,6 +255,12 @@ public class HMAServer {
 					"fail")) {
 				Log.d(API_ERROR_TAG,
 						enableTrackingJSONObject.getString("error"));
+			} else if (enableTrackingJSONObject.has("error")
+					&& enableTrackingJSONObject.getString("error").equals(
+							"Expired_token")) {
+				if (((Activity) context) instanceof MainActivity) {
+					MainActivity.expireDialog();
+				}
 			}
 		} catch (JSONException exception) {
 			Log.d(JSON_ERROR_TAG, "Can't enable server tracking");
