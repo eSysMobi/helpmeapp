@@ -1,7 +1,6 @@
 package mobi.esys.helpmeapp;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import mobi.esys.constants.HMAConsts;
 import mobi.esys.data_types.AuthData;
@@ -15,14 +14,18 @@ import org.joda.time.format.DateTimeFormatter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.facebook.Request;
@@ -60,6 +63,7 @@ public class LoginActivity extends Activity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 
 		prefs = getSharedPreferences(HMAConsts.HMA_PREF, MODE_PRIVATE);

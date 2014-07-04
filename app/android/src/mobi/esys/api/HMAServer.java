@@ -61,7 +61,7 @@ public class HMAServer {
 					.append(PARAM_TOKEN).append(authData.getAccessToken())
 					.append("&id=").append(authData.getSocID());
 			JSONObject regJSONObject = apirequest
-					.doJSONGetRequest(reqRequestURL.toString());
+					.doJSONGetRequesOKHTTP(reqRequestURL.toString());
 			if (regJSONObject.getString("status").equals("success")) {
 
 				SharedPreferences.Editor editor = preferences.edit();
@@ -93,7 +93,7 @@ public class HMAServer {
 					.append("&id=").append(authData.getSocID()).append("&exp=")
 					.append(authData.getExpireTime());
 			JSONObject regJSONObject = apirequest
-					.doJSONGetRequest(reqRequestURL.toString());
+					.doJSONGetRequesOKHTTP(reqRequestURL.toString());
 			if (regJSONObject.getString("status").equals("success")) {
 
 				SharedPreferences.Editor editor = preferences.edit();
@@ -127,7 +127,7 @@ public class HMAServer {
 					.append("&type=android");
 
 			addDeviceJSONObject = apirequest
-					.doJSONGetRequest(addDeviceRequestURL.toString());
+					.doJSONGetRequesOKHTTP(addDeviceRequestURL.toString());
 
 			if (addDeviceJSONObject.getString("status").equals("success")) {
 				SharedPreferences.Editor editor = preferences.edit();
@@ -171,7 +171,7 @@ public class HMAServer {
 					.append("&timelimit=").append(limitsUnit.getTimeLimit());
 
 			JSONObject setLimitsJSONObject = apirequest
-					.doJSONGetRequest(setLimitsrequestURL.toString());
+					.doJSONGetRequesOKHTTP(setLimitsrequestURL.toString());
 			if (setLimitsJSONObject.getString("status").equals("success")) {
 				// Toast.makeText(context,
 				// resources.getString(R.string.limitSuccess),
@@ -206,8 +206,8 @@ public class HMAServer {
 					.append(apiKey).append("&lat=").append(recordUnit.getLat())
 					.append("&lng=").append(recordUnit.getLon())
 					.append("&speed=").append(recordUnit.getSpeed());
-			JSONObject addRecJSONObject = apirequest.doJSONGetRequest(addRecURL
-					.toString());
+			JSONObject addRecJSONObject = apirequest
+					.doJSONGetRequesOKHTTP(addRecURL.toString());
 
 			if (addRecJSONObject.getString("status").equals("fail")) {
 				Log.d(API_ERROR_TAG, addRecJSONObject.getString("error"));
@@ -226,7 +226,7 @@ public class HMAServer {
 					.append("deviceId=").append(deviceID).append("&apikey=")
 					.append(apiKey);
 			JSONObject disableTrackingJSONObject = apirequest
-					.doJSONGetRequest(disableTrackingURL.toString());
+					.doJSONGetRequesOKHTTP(disableTrackingURL.toString());
 			if (disableTrackingJSONObject.getString("status").equals("success")) {
 				Log.i(SERVER_INFO_TAG, "disable server tracking");
 			} else if (disableTrackingJSONObject.getString("status").equals(
@@ -275,7 +275,7 @@ public class HMAServer {
 					.append("deviceId=").append(deviceID).append("&apikey=")
 					.append(apiKey);
 			JSONObject sendMsgJSONObject = apirequest
-					.doJSONGetRequest(sendMsgURL.toString());
+					.doJSONGetRequesOKHTTP(sendMsgURL.toString());
 			if (sendMsgJSONObject.getString("status").equals("success")) {
 				Log.i(SERVER_INFO_TAG, "send message to server");
 			} else if (sendMsgJSONObject.getString("status").equals("fail")) {
@@ -292,8 +292,8 @@ public class HMAServer {
 		try {
 			StringBuilder vkStringBuilder = new StringBuilder();
 			vkStringBuilder.append(HMAConsts.VK_PREFIX).append(accessToken);
-			vkuserObj = apirequest.doJSONGetRequest(vkStringBuilder.toString())
-					.getJSONArray("response");
+			vkuserObj = apirequest.doJSONGetRequesOKHTTP(
+					vkStringBuilder.toString()).getJSONArray("response");
 			JSONObject response = vkuserObj.getJSONObject(0);
 			vkUserID = response.getString("id");
 		} catch (JSONException e) {
@@ -334,7 +334,7 @@ public class HMAServer {
 	public String getFBUserID(String aT) {
 		String fbUID = "";
 		try {
-			fbUID = apirequest.doJSONGetRequest(
+			fbUID = apirequest.doJSONGetRequesOKHTTP(
 					"https://graph.facebook.com/me?access_token=" + aT)
 					.getString("id");
 		} catch (JSONException e) {

@@ -5,38 +5,6 @@
     tools:context="mobi.esys.helpmeapp.MainActivity"
     tools:ignore="MergeRootFrame" >
 
-    <TextView
-        android:id="@+id/velLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="Скорость срабатывания"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Spinner
-        android:id="@+id/velSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/velLabel" />
-
-    <TextView
-        android:id="@+id/timeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/velSpinner"
-        android:text="Время срабатывания"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Spinner
-        android:id="@+id/timeSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/timeLabel" />
-
     <Button
         android:id="@+id/exitBtn"
         android:layout_width="wrap_content"
@@ -64,5 +32,67 @@
         android:layout_alignParentRight="true"
         android:text="@string/startBtn" />
 
-</RelativeLayout>
+    <Spinner
+        android:id="@+id/velSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/timeLabel"
+        android:layout_alignParentLeft="true" />
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Мера измерения скорости"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Spinner
+        android:id="@+id/timeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/setBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="36dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1" >
+
+        <RadioButton
+            android:id="@+id/kmRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="киллометры" />
+
+        <RadioButton
+            android:id="@+id/mlRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="милли" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/velLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/velSpinner"
+        android:layout_centerHorizontal="true"
+        android:text="Скорость срабатывания"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/timeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/timeSpinner"
+        android:layout_centerHorizontal="true"
+        android:text="Время срабатывания"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>

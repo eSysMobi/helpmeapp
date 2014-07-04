@@ -1,5 +1,7 @@
 package mobi.esys.helpmeapp;
 
+import java.util.Locale;
+
 import mobi.esys.constants.HMAConsts;
 import mobi.esys.data_types.TrackingLimitsUnit;
 import mobi.esys.tasks.DisableTrackingTask;
@@ -21,10 +23,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 
 public class MainActivity extends Activity implements
-		android.view.View.OnClickListener {
+		android.view.View.OnClickListener, OnCheckedChangeListener {
 	private transient Spinner velSpinner;
 	private transient Spinner timeSpinner;
 	private transient Button setButton;
@@ -32,6 +37,10 @@ public class MainActivity extends Activity implements
 	private transient Button exitButton;
 	private transient boolean isStoped = true;
 	private transient SharedPreferences preferences;
+	private transient RadioButton mlRadio;
+	private transient RadioButton kmRadio;
+	private transient RadioGroup group;
+	private transient Resources resources;
 
 	private static final int NOTIFY_ID = HMAConsts.WORKING_NOTIFICATION_ID;
 	private static AlertDialog dialog;
@@ -40,8 +49,10 @@ public class MainActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Resources resources = getResources();
+		resources = getResources();
 		Bundle extras;
+
+		Locale current = getResources().getConfiguration().locale;
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setCancelable(false);
@@ -63,8 +74,23 @@ public class MainActivity extends Activity implements
 				stopSendService();
 			}
 		}
+		int[] velocities = { 0 };
+
+		group = (RadioGroup) findViewById(R.id.radioGroup1);
+
+		mlRadio = (RadioButton) findViewById(R.id.mlRadio);
+		kmRadio = (RadioButton) findViewById(R.id.kmRadio);
+
 		preferences = getSharedPreferences(HMAConsts.HMA_PREF, MODE_PRIVATE);
-		int[] velocities = resources.getIntArray(R.array.velocities);
+		if (current.getLanguage().equals("en")) {
+			velocities = resources.getIntArray(R.array.velocitiesMl);
+			mlRadio.setChecked(true);
+			kmRadio.setChecked(false);
+		} else {
+			velocities = resources.getIntArray(R.array.velocitiesKM);
+			mlRadio.setChecked(false);
+			kmRadio.setChecked(true);
+		}
 		int[] reaction_times = resources
 				.getIntArray(R.array.reaction_intervals);
 
@@ -88,6 +114,8 @@ public class MainActivity extends Activity implements
 		velSpinner.setAdapter(velAdapter);
 		timeSpinner.setAdapter(reactTimesAdapter);
 
+		group.setOnCheckedChangeListener(this);
+
 		setButton.setOnClickListener(this);
 		stopButton.setOnClickListener(this);
 		exitButton.setOnClickListener(this);
@@ -96,9 +124,17 @@ public class MainActivity extends Activity implements
 	}
 
 	private void saveToPref() {
+		long velocity = 0;
+		if (mlRadio.isChecked()) {
+			velocity = Math.round(Integer.parseInt(velSpinner.getSelectedItem()
+					.toString()) * 1.609);
+			Log.d("vel", String.valueOf(velocity));
+		} else {
+			velocity = Long.parseLong(velSpinner.getSelectedItem().toString());
+			Log.d("vel", String.valueOf(velocity));
+		}
 		TrackingLimitsUnit limitsUnit = new TrackingLimitsUnit(timeSpinner
-				.getSelectedItem().toString(), velSpinner.getSelectedItem()
-				.toString());
+				.getSelectedItem().toString(), String.valueOf(velocity));
 		SetLimitsTask limitsTask = new SetLimitsTask(MainActivity.this);
 		limitsTask.execute(limitsUnit);
 	}
@@ -131,6 +167,8 @@ public class MainActivity extends Activity implements
 		if (v.getId() == R.id.setBtn) {
 			saveToPref();
 			startSendService();
+			moveTaskToBack(true);
+
 		} else if (v.getId() == R.id.exitBtn) {
 			stopSendService();
 			NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -182,6 +220,7 @@ public class MainActivity extends Activity implements
 		@SuppressWarnings("deprecation")
 		Notification n = builder.getNotification();
 		nm.notify(NOTIFY_ID, n);
+
 	}
 
 	private void stopSendService() {
@@ -189,7 +228,7 @@ public class MainActivity extends Activity implements
 				MainActivity.this);
 		disableTracking.execute();
 		isStoped = true;
-
+		preferences = getSharedPreferences(HMAConsts.HMA_PREF, MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean("isStoped", isStoped);
 		editor.commit();
@@ -199,7 +238,33 @@ public class MainActivity extends Activity implements
 		if (!dialog.isShowing()) {
 			dialog.show();
 		}
-
 	}
 
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		ArrayAdapter<Integer> velAdapter;
+		switch (checkedId) {
+
+		case R.id.kmRadio:
+			mlRadio.setChecked(false);
+			velAdapter = new ArrayAdapter<Integer>(this,
+					android.R.layout.simple_spinner_item,
+					intToInteger(resources.getIntArray(R.array.velocitiesKM)));
+			velAdapter
+					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			velSpinner.setAdapter(velAdapter);
+			// velAdapter.notifyAll();
+			break;
+		case R.id.mlRadio:
+			kmRadio.setChecked(false);
+			velAdapter = new ArrayAdapter<Integer>(this,
+					android.R.layout.simple_spinner_item,
+					intToInteger(resources.getIntArray(R.array.velocitiesMl)));
+			velAdapter
+					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			velSpinner.setAdapter(velAdapter);
+			// velAdapter.notifyAll();
+			break;
+		}
+	}
 }
