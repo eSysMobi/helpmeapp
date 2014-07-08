@@ -5,40 +5,6 @@
     tools:context="mobi.esys.helpmeapp.MainActivity"
     tools:ignore="MergeRootFrame" >
 
-    <Button
-        android:id="@+id/exitBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/exit" />
-
-    <Button
-        android:id="@+id/stopBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/exitBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/stopBtn" />
-
-    <Button
-        android:id="@+id/setBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/stopBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/startBtn" />
-
-    <Spinner
-        android:id="@+id/velSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/timeLabel"
-        android:layout_alignParentLeft="true" />
-
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -47,14 +13,6 @@
         android:layout_alignParentTop="true"
         android:text="Мера измерения скорости"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Spinner
-        android:id="@+id/timeSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/setBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="36dp" />
 
     <RadioGroup
         android:id="@+id/radioGroup1"
@@ -67,32 +25,55 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="киллометры" />
+            android:text="@string/kmRadioText" />
 
         <RadioButton
             android:id="@+id/mlRadio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="милли" />
+            android:text="@string/mlRadioText" />
     </RadioGroup>
+
+    <Button
+        android:id="@+id/setBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/startBtn" />
 
     <TextView
         android:id="@+id/velLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/velSpinner"
-        android:layout_centerHorizontal="true"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/radioGroup1"
         android:text="Скорость срабатывания"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <antistatic.spinnerwheel.WheelVerticalView
+        android:id="@+id/velSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/velLabel" />
 
     <TextView
         android:id="@+id/timeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/timeSpinner"
+        android:layout_below="@+id/velSpinner"
         android:layout_centerHorizontal="true"
         android:text="Время срабатывания"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <antistatic.spinnerwheel.WheelVerticalView
+        android:id="@+id/timeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/timeLabel" />
 
 </RelativeLayout>

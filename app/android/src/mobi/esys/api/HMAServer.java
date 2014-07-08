@@ -137,6 +137,7 @@ public class HMAServer {
 					editor.putString("deviceID",
 							addDeviceJSONObject.getString("deviceId"));
 				editor.commit();
+				((LoginActivity) context).finish();
 				context.startActivity(new Intent(context, MainActivity.class));
 
 			} else if (addDeviceJSONObject.has("error")

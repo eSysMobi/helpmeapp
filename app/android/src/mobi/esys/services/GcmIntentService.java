@@ -31,12 +31,9 @@ public class GcmIntentService extends IntentService {
 		final GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
 		final String messageType = gcm.getMessageType(intent);
 
-		startActivity(new Intent(this, EmptyActivity.class));
-
 		if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 			sendNotification();
 		}
-
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
 	}
 
@@ -61,7 +58,7 @@ public class GcmIntentService extends IntentService {
 		final Notification notification = mBuilder.build();
 
 		// notification.defaults |= Notification.DEFAULT_SOUND;
-		notification.defaults |= Notification.FLAG_AUTO_CANCEL;
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notification.flags |= Notification.FLAG_SHOW_LIGHTS;
 		notification.ledARGB = 0xff00ff00;
 		notification.ledOnMS = 300;
@@ -75,4 +72,5 @@ public class GcmIntentService extends IntentService {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		v.vibrate(400);
 	}
+
 }

@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="app_name">I need your help</string>
-    <string name="startBtn">Начать отслеживание</string>
-    <string name="stopBtn">Остановить отслеживание</string>
-    <string name="exit">Выход</string>
-    <string name="regSuccess">Успешная регистрация</string>
-    <string name="regError">Can\'t registrate or update user information</string>
-    <string name="deviceSuccess">Устройство успешно зарегистрировано</string>
-    <string name="deviceRegError">Can\'t registrate device</string>
-    <string name="limitSuccess">Параметры отслеживания успешно установлены</string>
-    <string name="limitsError">Can\'t set monitoring params</string>
-    <string name="regFail">Не удалось зарегистрировать пользователя</string>
-    <string name="deviceFail">Не удалось зарегистрировать устройство</string>
-    <string name="limitsFail">Не удалось установить параметры отслеживания</string>
-    <string name="addRecordError">Can\'t add record</string>
-    <string name="changeConditions">Изменить условия</string>
-    <string name="disableTracking">Отключить слежение</string>
-    <string name="changeNetwork">Переключить аккаунт</string>
-    <string name="fb_app_id">579394165512081</string>
+    <string name="app_name" tools:ignore="MissingTranslation">I need your help</string>
+    <string name="startBtn" tools:ignore="MissingTranslation,MissingTranslation">GO!</string>
+    <string name="regSuccess" tools:ignore="MissingTranslation,MissingTranslation">Успешная регистрация</string>
+    <string name="regError" tools:ignore="MissingTranslation">Can\'t registrate or update user information</string>
+    <string name="deviceSuccess" tools:ignore="MissingTranslation">Устройство успешно зарегистрировано</string>
+    <string name="deviceRegError" tools:ignore="MissingTranslation,MissingTranslation">Can\'t registrate device</string>
+    <string name="limitSuccess" tools:ignore="MissingTranslation,MissingTranslation">Параметры отслеживания успешно установлены</string>
+    <string name="limitsError" tools:ignore="MissingTranslation">Can\'t set monitoring params</string>
+    <string name="regFail" tools:ignore="MissingTranslation,MissingTranslation">Не удалось зарегистрировать пользователя</string>
+    <string name="deviceFail" tools:ignore="MissingTranslation">Не удалось зарегистрировать устройство</string>
+    <string name="limitsFail" tools:ignore="MissingTranslation,MissingTranslation">Не удалось установить параметры отслеживания</string>
+    <string name="addRecordError" tools:ignore="MissingTranslation">Can\'t add record</string>
+    <string name="changeConditions" tools:ignore="MissingTranslation,MissingTranslation">Изменить условия</string>
+    <string name="disableTracking" tools:ignore="MissingTranslation,MissingTranslation">Отключить слежение</string>
+    <string name="changeNetwork" tools:ignore="MissingTranslation">Переключить аккаунт</string>
+    <string name="exitApp" tools:ignore="MissingTranslation">Выход из приложения</string>
+    <string name="fb_app_id" tools:ignore="MissingTranslation">579394165512081</string>
+    <string name="warning" tools:ignore="MissingTranslation">#IneedYourHelp\nВам нужна помощь?</string>
+    <string name="kmRadioText" tools:ignore="MissingTranslation">км/ч</string>
+    <string name="mlRadioText" tools:ignore="MissingTranslation">миль/час</string>
 
     <string-array name="menuItems">
         <item>@string/changeConditions</item>
         <item>@string/disableTracking</item>
         <item>@string/changeNetwork</item>
+        <item>@string/exitApp</item>
     </string-array>
-
-    <string name="warning">#IneedYourHelp\nВам нужна помощь?</string>
 
 </resources>

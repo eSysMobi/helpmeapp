@@ -14,18 +14,14 @@ import org.joda.time.format.DateTimeFormatter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.facebook.Request;
@@ -105,6 +101,7 @@ public class LoginActivity extends Activity implements
 
 			else {
 				startActivity(new Intent(LoginActivity.this, MainActivity.class));
+				finish();
 			}
 
 		}
@@ -285,15 +282,16 @@ public class LoginActivity extends Activity implements
 		public void onReceiveNewToken(VKAccessToken newToken) {
 			newToken.saveTokenToSharedPreferences(LoginActivity.this, sTokenKey);
 			Log.d("token", newToken.accessToken);
+			AuthData authData = new AuthData("vkontakte", newToken.userId,
+					newToken.accessToken);
+			RegTask regTask = new RegTask(LoginActivity.this);
+			regTask.execute(authData);
+
 		}
 
 		@Override
 		public void onAcceptUserToken(VKAccessToken token) {
 			Log.d("token", token.accessToken);
-			AuthData authData = new AuthData("vkontakte", token.userId,
-					token.accessToken);
-			RegTask regTask = new RegTask(LoginActivity.this);
-			regTask.execute(authData);
 		}
 	};
 

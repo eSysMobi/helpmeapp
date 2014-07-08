@@ -2,8 +2,10 @@
 # format is <lastModified> <length> <SHA-1> <path>
 # Encoding is UTF-8
 1404114583585 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\VKOpenAuthActivity\libs\android-support-v4.jar
-1404114823260 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\google-play-services_lib\libs\android-support-v4.jar
 1404114777388 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\facebook-android-sdk-3.15.0\facebook\libs\android-support-v4.jar
-1404114622627 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\androworkspace\HelpMeApp\libs\android-support-v4.jar
+1404725207410 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\helpmeapp-master\app\android\libs\android-support-v4.jar
+1404114823260 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\google-play-services_lib\libs\android-support-v4.jar
 1404114664913 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\SlidingMenu-master\library\libs\android-support-v4.jar
 1404128048168 758727 efec67655f6db90757faa37201efcee2a9ec3507 G:\T4JTwitterLogin-master\libs\android-support-v4.jar
+1404725207491 280471 381cf31e9200c2902782f17248d2af18e2ab4c56 G:\helpmeapp-master\app\android\libs\twitter4j-core-4.0.2.jar
+1403781757579 280471 381cf31e9200c2902782f17248d2af18e2ab4c56 G:\T4JTwitterLogin-master\libs\twitter4j-core-4.0.2.jar

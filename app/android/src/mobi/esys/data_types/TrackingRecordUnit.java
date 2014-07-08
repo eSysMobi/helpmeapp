@@ -22,7 +22,7 @@ public class TrackingRecordUnit {
 		super();
 		this.lat = String.valueOf(location.getLatitude());
 		this.lon = String.valueOf(location.getLongitude());
-		this.speed = String.valueOf(location.getSpeed());
+		this.speed = String.valueOf(3.6 * location.getSpeed());
 	}
 
 	public String getLat() {

@@ -11,16 +11,16 @@ public final class R {
 		public static final int ic_launcher = 0x7f020042;
 	}
 	public static final class id {
-		public static final int twitter_login_web_view = 0x7f07002d;
+		public static final int twitter_login_web_view = 0x7f08002b;
 	}
 	public static final class layout {
 		public static final int activity_twitter_login = 0x7f030003;
 	}
 	public static final class string {
-		public static final int twitter_login_activity_name = 0x7f050000;
+		public static final int twitter_login_activity_name = 0x7f060002;
 	}
 	public static final class style {
-		public static final int AppBaseTheme = 0x7f060000;
-		public static final int AppTheme = 0x7f060001;
+		public static final int AppBaseTheme = 0x7f070000;
+		public static final int AppTheme = 0x7f070001;
 	}
 }
